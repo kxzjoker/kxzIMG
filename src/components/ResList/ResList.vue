@@ -64,10 +64,11 @@ const copyCodeValue = async (v: string) => {
 
 // 一键复制所有URL
 const copyAllUrls = async () => {
-  // 过滤上传成功的URL
+  // 过滤上传成功的URL并移除上传失败的项
   const urls = props.modelValue
     .filter((item: any) => item.upload_result)  // 只选择上传成功的项
-    .map((item: any) => formatURL(item.upload_result));  // 获取格式化后的URL
+    .map((item: any) => formatURL(item.upload_result))  // 获取格式化后的URL
+    .filter(url => !url.includes('上传失败'));  // 移除包含 "上传失败" 的项
 
   if (urls.length > 0) {
     const urlText = urls.join('\n');  // 将所有URL用换行符连接
