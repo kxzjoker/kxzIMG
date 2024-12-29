@@ -28,8 +28,8 @@
             <img class="w-8" src="@/assets/images/footer/shang.svg" />  
           </a>
          <!-- <a title="Github" target="_blank" rel="nofollow" href="https://github.com/uxiaohan">  
-            <img class="w-8" src="@/assets/images/footer/github.svg" /> -->  
-          </a>  
+            <img class="w-8" src="@/assets/images/footer/github.svg" />   
+          </a>   -->   
           <a title="看戏仔API" target="_blank" href="https://api.kxzjoker.cn/">  
             <img class="w-8" src="@/assets/images/footer/blog.svg" />  
           </a>
