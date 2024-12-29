@@ -34,7 +34,10 @@ const formatURL = (v: any, key?: string) => {
   const ERROR_MSG = `${v._vh_filename} 上传失败`;
   try {
     FILE_ID = v.data.link.split('/').slice(-1)[0];
-  } catch {}
+  } catch {
+    return ERROR_MSG; // 上传失败时返回错误信息
+  }
+  
   if (key == 'md') {
     return FILE_ID ? `![${v._vh_filename}](${props.nodeHost}/v2/${FILE_ID})` : ERROR_MSG;
   }
@@ -61,6 +64,7 @@ const copyCodeValue = async (v: string) => {
 
 // 一键复制所有URL
 const copyAllUrls = async () => {
+  // 过滤上传成功的URL
   const urls = props.modelValue
     .filter((item: any) => item.upload_result)  // 只选择上传成功的项
     .map((item: any) => formatURL(item.upload_result));  // 获取格式化后的URL
@@ -75,7 +79,8 @@ const copyAllUrls = async () => {
 
 // 检查是否所有条目都有有效的URL
 const isAllUrlsValid = computed(() => {
-  return props.modelValue.some((item: any) => item.upload_result);  // 只要有一个有效URL就显示按钮
+  // 只要有一个有效URL就显示按钮
+  return props.modelValue.some((item: any) => item.upload_result && formatURL(item.upload_result) !== `${item._vh_filename} 上传失败`);
 });
 </script>
 
