@@ -1,7 +1,7 @@
 <template>
   <section class="ResList">
-    <!-- 添加一键复制按钮 -->
-    <div class="copy-all-button">
+    <!-- 添加一键复制按钮，如果没有上传图片则隐藏 -->
+    <div v-if="hasUploadedImages" class="copy-all-button">
       <button @click="copyAllURLs">一键复制所有图片URL</button>
     </div>
 
@@ -84,6 +84,11 @@ const copyAllURLs = async () => {
     toast({ title: '警告', description: '没有找到有效的图片URL！' });
   }
 };
+
+// 计算是否有上传图片
+const hasUploadedImages = computed(() => {
+  return props.modelValue.some((item: any) => item.upload_result);
+});
 </script>
 
 <style scoped lang="less">
@@ -96,12 +101,14 @@ const copyAllURLs = async () => {
 }
 
 .copy-all-button button {
-  padding: 10px 20px;
-  font-size: 14px;
+  padding: 12px 30px;  // 适当增大按钮的内边距
+  font-size: 16px;
   background-color: #4CAF50;
   color: white;
   border: none;
+  border-radius: 30px;  // 圆润按钮
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .copy-all-button button:hover {
