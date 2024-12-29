@@ -27,6 +27,9 @@
           <a title="打赏站长" target="_blank" href="/reward.webp">
             <img class="w-8" src="@/assets/images/footer/shang.svg" />
           </a>
+          <a title="看戏仔Api" target="_blank" href="https://api.kxzjoker.cn">
+            <img class="w-8" src="@/assets/images/footer/API-copy.svg" />
+          </a>
         </div>
         <span class="w-full font-bold text-lg text-center">看戏仔图床</span>
       </section>
