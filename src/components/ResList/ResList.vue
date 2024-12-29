@@ -68,7 +68,7 @@ const copyAllUrls = async () => {
   const urls = props.modelValue
     .filter((item: any) => item.upload_result)  // 只选择上传成功的项
     .map((item: any) => formatURL(item.upload_result))  // 获取格式化后的URL
-    .filter(url => !url.includes('上传失败'));  // 移除包含 "上传失败" 的项
+    .filter((url: string) => !url.includes('上传失败'));  // 移除包含 "上传失败" 的项
 
   if (urls.length > 0) {
     const urlText = urls.join('\n');  // 将所有URL用换行符连接
