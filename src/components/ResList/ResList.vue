@@ -1,5 +1,10 @@
 <template>
   <section class="ResList">
+    <!-- 添加一键复制按钮 -->
+    <div class="copy-all-button">
+      <button @click="copyAllURLs">一键复制所有图片URL</button>
+    </div>
+
     <div class="item" v-for="(i, idx) in props.modelValue" :key="idx">
       <img v-if="i.upload_blob" class="thumb" :src="i.upload_result ? i.upload_blob : LoadingImg" />
       <div class="value" :class="{ active: !i.upload_result }">
@@ -13,11 +18,6 @@
         <HoverCardContent class="w-max h-max"><QrcodeVue class="qrcode scale" :value="formatURL(i.upload_result)" :size="666" level="H" /></HoverCardContent>
       </HoverCard>
     </div>
-
-    <!-- 一键复制按钮 -->
-    <button v-if="canCopy" @click="copyAllUrls" class="copy-button">
-      一键复制所有图片URL
-    </button>
   </section>
 </template>
 
@@ -60,39 +60,51 @@ const copyCodeValue = async (v: string) => {
   }
 };
 
-// 获取所有有效的URL
-const getAllValidUrls = () => {
-  return props.modelValue
-    .map(i => i.upload_result ? formatURL(i.upload_result) : null)
-    .filter(url => url !== null) as string[];
-};
+// 一键复制所有图片的URL
+const copyAllURLs = async () => {
+  const allURLs = props.modelValue
+    .filter((item: any) => item.upload_result)  // 过滤出有上传结果的项
+    .map((item: any) => formatURL(item.upload_result)); // 获取每个项的URL
 
-// 检查是否有可复制的URL
-const canCopy = computed(() => getAllValidUrls().length > 0);
-
-// 一键复制所有图片URL
-const copyAllUrls = async () => {
-  const allUrls = getAllValidUrls().join('\n');  // 拼接所有URL
-  await copyCodeValue(allUrls);  // 调用复制方法
+  if (allURLs.length > 0) {
+    const allURLsText = allURLs.join('\n'); // 把URLs用换行符拼接成一个长文本
+    try {
+      await navigator.clipboard.writeText(allURLsText);  // 复制到剪贴板
+      toast({ title: 'Tips', description: '所有图片URL已复制！' });
+    } catch {
+      const i = document.createElement('textarea');
+      i.value = allURLsText;
+      document.body.appendChild(i);
+      i.select();
+      document.execCommand('copy');
+      document.body.removeChild(i);
+      toast({ title: 'Tips', description: '所有图片URL已复制！' });
+    }
+  } else {
+    toast({ title: '警告', description: '没有找到有效的图片URL！' });
+  }
 };
 </script>
 
 <style scoped lang="less">
 @import 'ResList.less';
 
-/* 按钮样式 */
-.copy-button {
-  margin-top: 20px;
-  padding: 10px 20px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
+// 添加样式
+.copy-all-button {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-.copy-button:hover {
+.copy-all-button button {
+  padding: 10px 20px;
+  font-size: 14px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.copy-all-button button:hover {
   background-color: #45a049;
 }
 </style>
