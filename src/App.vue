@@ -1,6 +1,6 @@
 <template>
-  <Header title="骤雨重山图床" desc="拒绝流量劫持，全面使用HTTPS" />
-  <main><RouterView /></main>
+  <Header title="看戏仔图床" desc="拒绝流量劫持，全面使用HTTPS" />
+  <main><RouterView /></main>  
   <Footer />
   <Toaster />
 </template>
