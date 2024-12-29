@@ -1,9 +1,7 @@
 <template>
   <section class="ResList">
-    <!-- 添加一键复制按钮 -->
-    <div class="copy-all-button">
-      <button @click="copyAllURLs">一键复制所有图片URL</button>
-    </div>
+    <!-- 一键复制按钮 -->
+    <button v-if="isAllUrlsValid" @click="copyAllUrls" class="copy-all-btn">一键复制所有URL</button>
 
     <div class="item" v-for="(i, idx) in props.modelValue" :key="idx">
       <img v-if="i.upload_blob" class="thumb" :src="i.upload_result ? i.upload_blob : LoadingImg" />
@@ -42,7 +40,7 @@ const formatURL = (v: any, key?: string) => {
   return FILE_ID ? `${props.nodeHost}/v2/${FILE_ID}` : ERROR_MSG;
 };
 
-// 复制单个URL
+// 复制单个CODE
 const copyCodeValue = async (v: string) => {
   let vhCopyStatus: any = false;
   try {
@@ -60,51 +58,47 @@ const copyCodeValue = async (v: string) => {
   }
 };
 
-// 一键复制所有图片的URL
-const copyAllURLs = async () => {
-  const allURLs = props.modelValue
-    .filter((item: any) => item.upload_result)  // 过滤出有上传结果的项
-    .map((item: any) => formatURL(item.upload_result)); // 获取每个项的URL
+// 一键复制所有URL
+const copyAllUrls = async () => {
+  const urls = props.modelValue
+    .filter((item: any) => item.upload_result)  // 只选择上传成功的项
+    .map((item: any) => formatURL(item.upload_result));  // 获取格式化后的URL
 
-  if (allURLs.length > 0) {
-    const allURLsText = allURLs.join('\n'); // 把URLs用换行符拼接成一个长文本
-    try {
-      await navigator.clipboard.writeText(allURLsText);  // 复制到剪贴板
-      toast({ title: 'Tips', description: '所有图片URL已复制！' });
-    } catch {
-      const i = document.createElement('textarea');
-      i.value = allURLsText;
-      document.body.appendChild(i);
-      i.select();
-      document.execCommand('copy');
-      document.body.removeChild(i);
-      toast({ title: 'Tips', description: '所有图片URL已复制！' });
-    }
+  if (urls.length > 0) {
+    const urlText = urls.join('\n');  // 将所有URL用换行符连接
+    await copyCodeValue(urlText);
   } else {
-    toast({ title: '警告', description: '没有找到有效的图片URL！' });
+    toast({ title: '提示', description: '没有有效的URL可复制' });
   }
 };
+
+// 检查是否所有条目都有有效的URL
+const isAllUrlsValid = computed(() => {
+  return props.modelValue.some((item: any) => item.upload_result);  // 只要有一个有效URL就显示按钮
+});
 </script>
 
 <style scoped lang="less">
 @import 'ResList.less';
 
-// 添加样式
-.copy-all-button {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.copy-all-button button {
-  padding: 10px 20px;
-  font-size: 14px;
-  background-color: #4CAF50;
+.copy-all-btn {
+  margin: 10px 0;
+  padding: 10px 15px;
+  background-color: #007bff;
   color: white;
   border: none;
+  border-radius: 5px;
   cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
 }
 
-.copy-all-button button:hover {
-  background-color: #45a049;
+.copy-all-btn:hover {
+  background-color: #0056b3;
+}
+
+.copy-all-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
 }
 </style>
